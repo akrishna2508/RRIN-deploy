@@ -1,0 +1,27 @@
+# ============================================================
+# requirements_inference.txt
+# Python packages needed ONLY to run the inference server.
+# This is much smaller than the full training requirements.txt
+# because we don't need PyTorch with CUDA, training libraries,
+# Kaggle tools, or evaluation metrics.
+# ============================================================
+
+# Core deep learning (CPU-only version for cheap server hosting)
+# On Render free tier and HF Spaces we use CPU inference
+# which is fast enough (~1-3 seconds per image)
+torch==2.2.0+cpu          --index-url https://download.pytorch.org/whl/cpu
+torchvision==0.17.0+cpu   --index-url https://download.pytorch.org/whl/cpu
+
+# Image processing
+Pillow>=10.0.0
+numpy<2.0.0
+opencv-python-headless>=4.8.0
+
+# Web server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+aiofiles>=23.0.0
+
+# Model download from Hugging Face Hub
+huggingface-hub>=0.19.0

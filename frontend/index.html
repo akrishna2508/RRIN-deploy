@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restorative Retinal Imaging Network</title>
+  <style>
+    /* ── High-Tech / Premium Dark Theme Reset ──────────────── */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-base:       #07090f;
+      --bg-surface:    rgba(20, 24, 34, 0.6);
+      --bg-surface-h:  rgba(30, 36, 50, 0.8);
+      --border:        rgba(255, 255, 255, 0.08);
+      --border-glow:   rgba(0, 229, 255, 0.3);
+      --accent:        #00e5ff;
+      --accent-grad:   linear-gradient(135deg, #00e5ff 0%, #0077ff 100%);
+      --text-main:     #f8f9fa;
+      --text-muted:    #8b949e;
+      --radius:        16px;
+      --shadow-glow:   0 8px 32px rgba(0, 229, 255, 0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      background-image: radial-gradient(circle at 50% 0%, rgba(0, 119, 255, 0.15), transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Typography & Header ──────────────────────────────── */
+    header {
+      text-align: center;
+      padding: 60px 24px 40px;
+    }
+    .logo { 
+      font-size: 2.8rem; 
+      font-weight: 800; 
+      letter-spacing: -1.5px; 
+    }
+    .logo span { 
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tagline { 
+      color: var(--text-muted); 
+      margin-top: 12px; 
+      font-size: 1.1rem; 
+      font-weight: 300;
+    }
+    
+    main { max-width: 1000px; margin: 0 auto; padding: 0 20px 64px; }
+
+    /* ── Glassmorphism Panels ─────────────────────────────── */
+    .glass-panel {
+      background: var(--bg-surface);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    /* ── Upload Zone ──────────────────────────────────────── */
+    #upload-wrapper { margin-bottom: 40px; }
+    
+    #drop-zone {
+      border: 1px dashed var(--border-glow);
+      border-radius: var(--radius);
+      padding: 64px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(0, 229, 255, 0.02);
+      position: relative;
+    }
+    #drop-zone:hover, #drop-zone.drag-over {
+      background: rgba(0, 229, 255, 0.06);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-glow);
+    }
+    #drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+    }
+    
+    .icon-upload {
+      stroke: var(--accent);
+      margin-bottom: 16px;
+      transition: transform 0.3s ease;
+    }
+    #drop-zone:hover .icon-upload { transform: translateY(-5px); }
+    
+    .drop-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
+    .drop-sub   { color: var(--text-muted); font-size: 0.9rem; }
+
+    /* ── Demo Button ──────────────────────────────────────── */
+    .demo-box { margin-top: 24px; text-align: center; }
+    .demo-btn {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+    }
+
+    /* ── System Instructions ──────────────────────────────── */
+    .how-section {
+      margin-top: 20px;
+      padding: 32px 0;
+    }
+    .how-section h2 {
+      font-size: 1.05rem; 
+      font-weight: 600; 
+      text-transform: uppercase; 
+      letter-spacing: 1px; 
+      color: var(--text-muted);
+      text-align: center; 
+      margin-bottom: 32px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 8px;
+    }
+    .steps-grid {
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+      gap: 24px;
+    }
+    .step-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .step-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 229, 255, 0.3);
+    }
+    .step-num {
+      font-size: 3rem; 
+      font-weight: 800; 
+      color: rgba(0, 229, 255, 0.08);
+      position: absolute; 
+      top: 12px; 
+      right: 20px; 
+      line-height: 1;
+    }
+    .step-card h3 { 
+      font-size: 1rem; 
+      font-weight: 600; 
+      margin-bottom: 8px; 
+      color: var(--text-main); 
+      position: relative;
+    }
+    .step-card p { 
+      font-size: 0.85rem; 
+      color: var(--text-muted); 
+      position: relative;
+    }
+
+    /* ── Processing State ─────────────────────────────────── */
+    #processing {
+      display: none;
+      text-align: center;
+      padding: 64px 24px;
+      border: 1px solid var(--accent);
+      animation: pulse-glow 2s infinite ease-in-out;
+    }
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.4); border-color: var(--accent); }
+      100% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.4); }
+    }
+    .loader {
+      width: 48px; height: 48px;
+      border: 3px solid rgba(0, 229, 255, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+      margin: 0 auto 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #progress-text { font-size: 1.15rem; font-weight: 600; letter-spacing: 0.5px;}
+    #progress-subtext { color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;}
+
+    /* ── Results Dashboard ────────────────────────────────── */
+    #results { display: none; }
+    
+    .results-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .results-header h2 { font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* 1. Interactive Slider View */
+    .comparison-wrap {
+      position: relative;
+      user-select: none;
+      overflow: hidden;
+      background: #000;
+    }
+    .comparison-wrap img {
+      display: block;
+      width: 100%;
+      max-height: 550px;
+      object-fit: contain;
+    }
+    #img-after-slider {
+      position: absolute;
+      inset: 0;
+      clip-path: inset(0 0 0 50%);
+      transition: clip-path 0s;
+    }
+    
+    .slider-line {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      cursor: ew-resize;
+      transform: translateX(-50%);
+    }
+    .slider-handle {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--bg-base);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+      display: flex; align-items: center; justify-content: center;
+      cursor: ew-resize;
+    }
+    .img-label {
+      position: absolute;
+      top: 16px;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+    }
+    .label-before { left: 16px; background: rgba(0,0,0,0.6); color: #8892b0; border: 1px solid #8892b0; }
+    .label-after  { right: 16px; background: rgba(0,0,0,0.6); color: var(--accent); border: 1px solid var(--accent); }
+
+    /* 2. Side-by-Side Dual View */
+    .sbs-container {
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+    .sbs-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sbs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .sbs-pane {
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .sbs-pane img {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+      max-height: 400px;
+    }
+    .sbs-pane-label {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      background: rgba(0,0,0,0.8);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* 3. Results Action Bar */
+    .metrics-bar {
+      display: flex;
+      gap: 24px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .metric { font-size: 0.85rem; }
+    .metric strong { color: var(--text-main); font-weight: 600; }
+    .metric span   { color: var(--text-muted); }
+    .actions { margin-left: auto; display: flex; gap: 12px; }
+    
+    /* ── Buttons ──────────────────────────────────────────── */
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { 
+      background: var(--accent-grad); 
+      color: #000; 
+      box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
+    }
+    .btn-primary:hover { box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4); }
+    .btn-outline { 
+      background: rgba(255,255,255,0.02); 
+      border: 1px solid var(--border); 
+      color: var(--text-main); 
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-muted); }
+
+    /* ── Errors ──────────────────────────── */
+    #error-panel {
+      display: none;
+      padding: 16px 20px;
+      background: rgba(255, 60, 60, 0.1);
+      border: 1px solid rgba(255, 60, 60, 0.3);
+      border-radius: var(--radius);
+      color: #ff5e5e;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+    }
+    footer a { color: var(--text-main); text-decoration: none; border-bottom: 1px solid var(--border); transition: border-color 0.2s;}
+    footer a:hover { border-color: var(--accent); }
+
+    /* ── Responsive Mobile Design ─────────────────────────── */
+    @media (max-width: 768px) {
+      .sbs-grid { grid-template-columns: 1fr; }
+      .metrics-bar { flex-direction: column; align-items: stretch; }
+      .actions { margin-left: 0; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Restorative Retinal Imaging <span>Network</span></div>
+  <p class="tagline">High-Fidelity Neural Retinal Restoration</p>
+</header>
+
+<main>
+
+  <input type="hidden" id="api-url" value="" />
+
+  <div id="error-panel" style="display: none;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span id="error-msg"></span>
+  </div>
+
+  <div id="upload-wrapper">
+    <div id="drop-zone" class="glass-panel">
+      <svg class="icon-upload" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <div class="drop-title">Initialize Image Scan</div>
+      <div class="drop-sub">Drag & drop or click to process a local fundus file (PNG, JPG, TIFF)</div>
+      <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(this.files[0])" />
+    </div>
+    
+    <div class="demo-box">
+      <button type="button" class="demo-btn" id="demo-trigger">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        Load Standard Calibration Image
+      </button>
+    </div>
+  </div>
+
+  <section id="instructions" class="how-section">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      System Operating Instructions
+    </h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Data Ingestion</h3>
+        <p>Drag and drop any clinical fundus photograph—even those obscured by cataracts, poor focus, or specular reflection.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>Neural Restoration</h3>
+        <p>The deployed U-Net architecture seamlessly extracts optical noise to isolate crisp, detailed retinal vessel structures.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>Analysis & Export</h3>
+        <p>Use the interactive dashboard to compare fine details before securely exporting the restored high-fidelity matrix.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="processing" class="glass-panel">
+    <div class="loader"></div>
+    <div id="progress-text">Executing Tensor Operations...</div>
+    <div id="progress-subtext">The U-Net generator is analyzing and restoring spatial data.</div>
+  </div>
+
+  <div id="results" class="glass-panel">
+    <div class="results-header">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      <h2>Restoration Analysis</h2>
+    </div>
+
+    <div class="comparison-wrap" id="comparison">
+      <img id="img-before-slider" src="" alt="Degraded input" draggable="false" />
+      <img id="img-after-slider"  src="" alt="Restored output" draggable="false" />
+      <span class="img-label label-before">Original</span>
+      <span class="img-label label-after">Restored</span>
+      
+      <div class="slider-line" id="slider-line">
+        <div class="slider-handle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"></polyline><polyline points="13 17 18 12 13 7"></polyline></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="sbs-container">
+      <div class="sbs-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1" ry="1"></rect><rect x="14" y="3" width="7" height="18" rx="1" ry="1"></rect></svg>
+        Side-by-Side Comparison
+      </div>
+      <div class="sbs-grid">
+        <div class="sbs-pane">
+          <img id="sbs-img-before" src="" alt="Original Side-by-side" />
+          <div class="sbs-pane-label" style="color: #8892b0;">Original Image</div>
+        </div>
+        <div class="sbs-pane">
+          <img id="sbs-img-after" src="" alt="Restored Side-by-side" />
+          <div class="sbs-pane-label" style="color: var(--accent);">Restored Image</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-bar">
+      <div class="metric"><span>Execution latency: </span><strong id="proc-time">—</strong></div>
+      <div class="actions">
+        <button class="btn btn-outline" onclick="resetApp()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+          Reset
+        </button>
+        <button class="btn btn-primary" id="download-btn" onclick="downloadRestored()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export PNG
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>The standard calibration sample image is provided by the <a href="https://www.kaggle.com/competitions/aptos2019-blindness-detection" target="_blank">APTOS 2019 Blindness Detection</a> challenge.</p>
+  <p style="margin-top: 8px;">Built with PyTorch &middot; Hosted on Hugging Face Spaces</p>
+</footer>
+
+<script>
+  let restoredBlob  = null;
+  let originalName  = "image";
+  let isDragging    = false;
+
+  function getApiUrl() {
+    return window.location.origin.replace(/\/$/, ""); 
+  }
+
+  const dropZone = document.getElementById("drop-zone");
+  dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+  dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("drag-over");
+    if (e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]);
+  });
+
+  function handleFileSelect(file) {
+    if (!file || !file.type.startsWith("image/")) {
+      showError("Invalid file type. Please select an image matrix (JPEG, PNG, TIFF).");
+      return;
+    }
+    originalName = file.name.replace(/\.[^.]+$/, "");
+    uploadAndRestore(file);
+  }
+
+  /* --- Local Server Fetch --- */
+  document.getElementById("demo-trigger").addEventListener("click", () => {
+    hideAll();
+    show("processing");
+    setProgress("Loading standard calibration image...");
+    
+    fetch("sample_retina.jpg")
+      .then(res => {
+        if (!res.ok) throw new Error("Storage fault: 'sample_retina.jpg' missing from cluster.");
+        return res.blob();
+      })
+      .then(blob => {
+        const sampleFile = new File([blob], "aptos_calibration_sample.jpg", { type: "image/jpeg" });
+        originalName = "aptos_calibration_sample";
+        uploadAndRestore(sampleFile);
+      })
+      .catch(err => {
+        hide("processing");
+        showError(err.message);
+      });
+  });
+
+  async function uploadAndRestore(file) {
+    hideAll();
+    show("processing");
+    setProgress("Initializing Tensor pipeline...");
+
+    const apiUrl = getApiUrl();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const beforeUrl = URL.createObjectURL(file);
+    // Update both the slider view AND the side-by-side view
+    document.getElementById("img-before-slider").src = beforeUrl;
+    document.getElementById("sbs-img-before").src = beforeUrl;
+
+    try {
+      setTimeout(() => setProgress("Running deep feature extraction..."), 800);
+      const startTime = Date.now();
+
+      const resp = await fetch(apiUrl + "/restore", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({ detail: resp.statusText }));
+        throw new Error(err.detail || `Server cluster returned status ${resp.status}`);
+      }
+
+      setProgress("Decoding output matrices...");
+      restoredBlob = await resp.blob();
+      const elapsedMs = Date.now() - startTime;
+      const serverTime = resp.headers.get("X-Processing-Time-Ms");
+
+      const afterUrl = URL.createObjectURL(restoredBlob);
+      // Update both the slider view AND the side-by-side view
+      document.getElementById("img-after-slider").src = afterUrl;
+      document.getElementById("sbs-img-after").src = afterUrl;
+
+      document.getElementById("proc-time").textContent = serverTime ? `${serverTime}ms` : `${elapsedMs}ms`;
+
+      hide("processing");
+      show("results");
+
+    } catch (e) {
+      hide("processing");
+      showError(e.message || "Pipeline execution failed. Verify server status.");
+    }
+  }
+
+  /* Slider Logic */
+  const comparison = document.getElementById("comparison");
+  const sliderLine = document.getElementById("slider-line");
+  const imgAfter   = document.getElementById("img-after-slider");
+
+  function updateSlider(x) {
+    const rect = comparison.getBoundingClientRect();
+    const pct  = Math.min(Math.max((x - rect.left) / rect.width, 0), 1) * 100;
+    imgAfter.style.clipPath   = `inset(0 0 0 ${pct}%)`;
+    sliderLine.style.left     = pct + "%";
+  }
+
+  comparison.addEventListener("mousedown",  (e) => { isDragging = true; updateSlider(e.clientX); });
+  comparison.addEventListener("touchstart", (e) => { isDragging = true; updateSlider(e.touches[0].clientX); }, { passive: true });
+  document.addEventListener("mousemove",   (e) => { if (isDragging) updateSlider(e.clientX); });
+  document.addEventListener("touchmove",   (e) => { if (isDragging) updateSlider(e.touches[0].clientX); }, { passive: true });
+  document.addEventListener("mouseup",     ()  => { isDragging = false; });
+  document.addEventListener("touchend",    ()  => { isDragging = false; });
+
+  function downloadRestored() {
+    if (!restoredBlob) return;
+    const a  = document.createElement("a");
+    a.href   = URL.createObjectURL(restoredBlob);
+    
+    // Customized downloaded file name to include RRIN prefix
+    a.download = "RRIN_" + originalName + "_restored.png";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function show(id)  { document.getElementById(id).style.display = "block"; }
+  function hide(id)  { document.getElementById(id).style.display = "none"; }
+  function hideAll() {
+    ["upload-wrapper", "instructions", "processing", "results", "error-panel"].forEach(hide);
+  }
+  function setProgress(msg) { document.getElementById("progress-text").textContent = msg; }
+  function showError(msg) {
+    document.getElementById("error-msg").textContent = msg;
+    document.getElementById("error-panel").style.display = "flex";
+    show("upload-wrapper");
+    show("instructions");
+  }
+  function resetApp() {
+    restoredBlob = null;
+    document.getElementById("file-input").value = "";
+    hideAll();
+    show("upload-wrapper");
+    show("instructions");
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    show("upload-wrapper");
+    show("instructions");
+  });
+</script>
+</body>
+</html>
